@@ -13,7 +13,8 @@ public class BurpExtender implements IBurpExtender, IHttpListener
     private IExtensionHelpers     helpers;
     IBurpExtenderCallbacks cc = null;
     private PrintWriter           stdout;
-   
+    private PrintWriter           stderr;
+    
     @Override
     public void registerExtenderCallbacks(final IBurpExtenderCallbacks callbacks)
     {
@@ -39,15 +40,25 @@ public class BurpExtender implements IBurpExtender, IHttpListener
             IHttpService httpService = messageInfo.getHttpService();
             byte[] req = messageInfo.getRequest();
             String s2 = new String(req);
-            s2 = s2.replace("Cookie:", "Cookie: aaa=bbb;");
-            stdout.println(s2);
+            String[] arr = s2.split("\n");
+            
+            for (int i =0;i<arr.length;i++)
+            {
+            	if (arr[i].contains("Cookie:"))
+            	{
+            		stdout.println("--------------------------");
+            		stdout.println(arr[i]);
+            		arr[i] = arr[i].replace("Cookie:", "Cookie: aaa=bbb;");
+            		stdout.println(arr[i]);
+                    stdout.println("--------------------------");
+            		stdout.println("");stdout.println("");
+            	}
+            }
+            s2 = String.join("\n",arr)+"\n\n";       
             messageInfo.setRequest(s2.getBytes());
             
             messageInfo.setHttpService(helpers.buildHttpService(httpService.getHost(), httpService.getPort(), httpService.getProtocol()));
         }
 
 	}
-  
-	
-
-}
+  }
