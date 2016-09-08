@@ -82,6 +82,10 @@ public class BurpExtender implements IBurpExtender, IHttpListener
             messageInfo.setRequest(s2.getBytes());
             
             messageInfo.setHttpService(helpers.buildHttpService(httpService.getHost(), httpService.getPort(), httpService.getProtocol()));
+        }        
+        else
+        {
+        	stdout.println(new String(messageInfo.getResponse()));
         }
 
 	}
